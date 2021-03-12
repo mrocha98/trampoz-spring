@@ -27,7 +27,6 @@ CREATE TABLE com_companies
 (
     com_id   uuid primary key,
     com_cnpj varchar(255) not null,
-    com_name varchar(255) not null,
     constraint com_contractor_cnpj_uk unique (com_cnpj),
     constraint com_usr_fk foreign key (com_id) references usr_users (usr_id)
 );

@@ -19,9 +19,6 @@ public class Company extends User {
     @Column(name = "com_cnpj", unique = true)
     private String cnpj;
 
-    @Column(name = "com_name")
-    private String name;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
     private Set<Job> jobs = new HashSet<>();
 
