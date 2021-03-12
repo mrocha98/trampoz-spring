@@ -9,7 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface FreelancerRepository extends JpaRepository<Freelancer, UUID> {
-
-    public Freelancer findByName(String name);
-
+    List<Freelancer> findByEmail(String email);
 }
