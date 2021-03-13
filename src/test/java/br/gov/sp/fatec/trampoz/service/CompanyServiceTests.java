@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -65,6 +66,12 @@ public class CompanyServiceTests {
 
         Assertions.assertEquals(1, found.size());
         Assertions.assertEquals(cnpj, found.get(0).getCnpj());
+    }
+
+    @Test
+    public void shouldFindById() {
+        Assertions.assertTrue(companyService.findById(company.getId()).isPresent());
+        Assertions.assertTrue(companyService.findById(UUID.randomUUID()).isEmpty());
     }
 
     @Test
