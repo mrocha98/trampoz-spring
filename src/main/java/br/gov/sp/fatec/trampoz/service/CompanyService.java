@@ -1,12 +1,14 @@
 package br.gov.sp.fatec.trampoz.service;
 
 import br.gov.sp.fatec.trampoz.entity.Company;
+import br.gov.sp.fatec.trampoz.enums.RoleNameEnum;
 import br.gov.sp.fatec.trampoz.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -14,6 +16,13 @@ public class CompanyService {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private RoleService roleService;
+
+    public Optional<Company> findById(UUID id) {
+        return companyRepository.findById(id);
+    }
 
     public List<Company> findByEmail(String email) {
         return companyRepository.findByEmail(email);
@@ -23,8 +32,17 @@ public class CompanyService {
         return companyRepository.findByCnpj(cnpj);
     }
 
+    public Long countJobs(UUID companyId) {
+        return companyRepository.countJobs(companyId);
+    }
+
+    public Long countJobsAndFilterByIsOpen(UUID id, Boolean isOpen) {
+        return companyRepository.countJobsAndFilterByIsOpen(id, isOpen);
+    }
+
     @Transactional
     public void create(Company company) {
+        company.setRole(roleService.findByName(RoleNameEnum.COMPANY));
         companyRepository.save(company);
     }
 

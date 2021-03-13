@@ -1,51 +1,45 @@
 package br.gov.sp.fatec.trampoz.service;
 
 import br.gov.sp.fatec.trampoz.entity.Freelancer;
+import br.gov.sp.fatec.trampoz.entity.Resume;
 import br.gov.sp.fatec.trampoz.mocks.FreelancerMock;
+import br.gov.sp.fatec.trampoz.mocks.ResumeMock;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 @Rollback
-public class FreelancerServiceTests {
+public class ResumeServiceTests {
+    @Autowired
+    private ResumeService resumeService;
 
     @Autowired
     private FreelancerService freelancerService;
 
+    private final Resume resume = ResumeMock.getMockResume();
     private final Freelancer freelancer = FreelancerMock.getMockFreelancer();
 
     @BeforeAll
     void init() {
         freelancerService.create(freelancer);
+        resumeService.create(resume, freelancer.getId());
     }
 
     @AfterAll
     void exit() {
+        resumeService.delete(resume.getId());
         freelancerService.delete(freelancer.getId());
     }
 
     @Test
-    void shouldFindByEmail() {
-        String email = freelancer.getEmail();
-        List<Freelancer> found = new ArrayList<>(freelancerService.findByEmail(email));
-
-        Assertions.assertEquals(1, found.size());
-        Assertions.assertEquals(email, found.get(0).getEmail());
-    }
-
-    @Test
     void shouldFindById() {
-        Assertions.assertTrue(freelancerService.findById(freelancer.getId()).isPresent());
-        Assertions.assertTrue(freelancerService.findById(UUID.randomUUID()).isEmpty());
+        Assertions.assertTrue(resumeService.findById(resume.getId()).isPresent());
+        Assertions.assertTrue(resumeService.findById(freelancer.getId()).isEmpty());
     }
-
 }

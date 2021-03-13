@@ -1,7 +1,9 @@
 package br.gov.sp.fatec.trampoz.service;
 
 import br.gov.sp.fatec.trampoz.entity.Company;
-import br.gov.sp.fatec.trampoz.enums.RoleNameEnum;
+import br.gov.sp.fatec.trampoz.entity.Job;
+import br.gov.sp.fatec.trampoz.mocks.CompanyMock;
+import br.gov.sp.fatec.trampoz.mocks.JobMock;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +11,7 @@ import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -21,24 +24,28 @@ public class CompanyServiceTests {
     private CompanyService companyService;
 
     @Autowired
-    private RoleService roleService;
+    private JobService jobService;
 
-    private Company company = new Company();
+    private final Company company = CompanyMock.getMockCompany();
+    private final List<Job> jobs = new ArrayList<>(
+        Arrays.asList(
+            JobMock.getMockJob(true),
+            JobMock.getMockJob(false)
+        )
+    );
 
     @BeforeAll
     public void init() {
-        company.setRole(roleService.findByName(RoleNameEnum.COMPANY));
-        company.setName("Juquinha Lanches");
-        company.setEmail("jlanches@email.com");
-        company.setPassword("SenhaF0rte");
-        company.setAvatarLink("https://pudim.com.br");
-        company.setCnpj("123456789");
-
         companyService.create(company);
+        jobs.forEach(job -> {
+            job.setCompany(company);
+            jobService.create(job);
+        });
     }
 
     @AfterAll
     public void exit() {
+        jobs.forEach(job -> jobService.delete(job.getId()));
         companyService.delete(company.getId());
     }
 
@@ -58,5 +65,15 @@ public class CompanyServiceTests {
 
         Assertions.assertEquals(1, found.size());
         Assertions.assertEquals(cnpj, found.get(0).getCnpj());
+    }
+
+    @Test
+    public void shouldCountJobs() {
+        Assertions.assertEquals(2, companyService.countJobs(company.getId()));
+    }
+
+    @Test
+    public void shouldCountAndFilterByIsOpen() {
+        Assertions.assertEquals(1, companyService.countJobsAndFilterByIsOpen(company.getId(), true));
     }
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 @AttributeOverride(name = "id", column = @Column(name = "job_id"))
 public class Job extends Base {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "com_id")
     private Company company;
 
@@ -29,7 +29,7 @@ public class Job extends Base {
     @Column(name = "job_is_open")
     private Boolean isOpen;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "jap_job_applications",
         joinColumns = {@JoinColumn(name = "job_id")},
