@@ -83,4 +83,25 @@ public class CompanyServiceTests {
     public void shouldCountAndFilterByIsOpen() {
         Assertions.assertEquals(1, companyService.countJobsAndFilterByIsOpen(company.getId(), true));
     }
+
+    @Test
+    public void shouldCreateWithJobs() {
+        Company testCompany = CompanyMock.getMockCompany();
+        testCompany.setEmail("test@test.com");
+
+        List<Job> testJobs = new ArrayList<>(
+            Arrays.asList(
+                JobMock.getMockJob(),
+                JobMock.getMockJob(),
+                JobMock.getMockJob(),
+                JobMock.getMockJob()
+            )
+        );
+
+        companyService.createWithJobs(testCompany, testJobs);
+
+        Assertions.assertNotNull(testCompany.getId());
+        Assertions.assertEquals(4, testJobs.size());
+        testJobs.forEach(job -> Assertions.assertNotNull(job.getId()));
+    }
 }

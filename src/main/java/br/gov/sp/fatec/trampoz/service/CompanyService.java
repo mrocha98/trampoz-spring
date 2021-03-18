@@ -1,6 +1,7 @@
 package br.gov.sp.fatec.trampoz.service;
 
 import br.gov.sp.fatec.trampoz.entity.Company;
+import br.gov.sp.fatec.trampoz.entity.Job;
 import br.gov.sp.fatec.trampoz.enums.RoleNameEnum;
 import br.gov.sp.fatec.trampoz.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class CompanyService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private JobService jobService;
 
     public Optional<Company> findById(UUID id) {
         return companyRepository.findById(id);
@@ -44,6 +48,16 @@ public class CompanyService {
     public void create(Company company) {
         company.setRole(roleService.findByName(RoleNameEnum.COMPANY));
         companyRepository.save(company);
+    }
+
+    @Transactional
+    public void createWithJobs(Company company, List<Job> jobs) {
+        this.create(company);
+
+        jobs.forEach(job -> {
+            job.setCompany(company);
+            jobService.create(job);
+        });
     }
 
     @Transactional

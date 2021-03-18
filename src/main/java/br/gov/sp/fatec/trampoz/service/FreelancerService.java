@@ -1,6 +1,7 @@
 package br.gov.sp.fatec.trampoz.service;
 
 import br.gov.sp.fatec.trampoz.entity.Freelancer;
+import br.gov.sp.fatec.trampoz.entity.Resume;
 import br.gov.sp.fatec.trampoz.enums.RoleNameEnum;
 import br.gov.sp.fatec.trampoz.repository.FreelancerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class FreelancerService {
     private FreelancerRepository freelancerRepository;
 
     @Autowired
+    private ResumeService resumeService;
+
+    @Autowired
     private RoleService roleService;
 
     public Optional<Freelancer> findById(UUID id) {
@@ -31,6 +35,14 @@ public class FreelancerService {
     public void create(Freelancer freelancer) {
         freelancer.setRole(roleService.findByName(RoleNameEnum.FREELANCER));
         freelancerRepository.save(freelancer);
+    }
+
+    @Transactional
+    public void createWithResume(Freelancer freelancer, Resume resume) {
+        this.create(freelancer);
+
+        resume.setFreelancer(freelancer);
+        resumeService.create(resume);
     }
 
     @Transactional

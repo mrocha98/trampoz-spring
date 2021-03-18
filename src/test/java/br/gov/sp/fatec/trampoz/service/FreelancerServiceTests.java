@@ -1,7 +1,9 @@
 package br.gov.sp.fatec.trampoz.service;
 
 import br.gov.sp.fatec.trampoz.entity.Freelancer;
+import br.gov.sp.fatec.trampoz.entity.Resume;
 import br.gov.sp.fatec.trampoz.mocks.FreelancerMock;
+import br.gov.sp.fatec.trampoz.mocks.ResumeMock;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +48,20 @@ public class FreelancerServiceTests {
     void shouldFindById() {
         Assertions.assertTrue(freelancerService.findById(freelancer.getId()).isPresent());
         Assertions.assertTrue(freelancerService.findById(UUID.randomUUID()).isEmpty());
+    }
+
+    @Test
+    void shouldCreateWithResume() {
+        Freelancer testFreelancer = FreelancerMock.getMockFreelancer();
+        testFreelancer.setEmail("test@test.com");
+
+        Resume testResume = ResumeMock.getMockResume();
+        testResume.setFreelancer(testFreelancer);
+
+        freelancerService.createWithResume(testFreelancer, testResume);
+
+        Assertions.assertNotNull(testFreelancer.getId());
+        Assertions.assertNotNull(testResume.getId());
     }
 
 }
