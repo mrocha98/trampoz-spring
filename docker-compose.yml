@@ -22,11 +22,18 @@ services:
         max-file: "4"
 
   adminer:
-    image: adminer
+    image: wodby/adminer:latest
     container_name: trampoz-adminer
     restart: unless-stopped
+    tty: true
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: pgsql
+      ADMINER_DEFAULT_DB_HOST: db
+      ADMINER_DEFAULT_DB_NAME: trampoz
+      ADMINER_DESIGN: dracula
+      ADMINER_PLUGINS: tables-filter tinymce
     ports:
-      - 9600:8080
+      - 9600:9000
     logging:
       options:
         max-size: "5m"

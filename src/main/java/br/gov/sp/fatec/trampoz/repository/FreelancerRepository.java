@@ -1,7 +1,6 @@
 package br.gov.sp.fatec.trampoz.repository;
 
-import br.gov.sp.fatec.trampoz.entity.Role;
-import br.gov.sp.fatec.trampoz.enums.RoleNameEnum;
+import br.gov.sp.fatec.trampoz.entity.Freelancer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, UUID> {
-
-    List<Role> findByName(RoleNameEnum name);
-
+public interface FreelancerRepository extends JpaRepository<Freelancer, UUID> {
+    List<Freelancer> findByEmail(String email);
 }
